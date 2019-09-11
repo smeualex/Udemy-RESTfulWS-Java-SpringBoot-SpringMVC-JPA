@@ -138,4 +138,19 @@ public class UserController {
 		return addresses;
 	}
 	
+	//asdfasdf
+	// GET USER'S ADDRESS
+	// http://localhost:8080/api/users/<userId>/addresses/<addressId>
+	//
+	@GetMapping(path = "/{id}/addresses/{addressId}", 
+				produces = { MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE })
+	public AddressRest getUserAddress(@PathVariable String id, @PathVariable String addressId) {
+
+			AddressDto addressesDto = addressService.getAddress(addressId);
+			AddressRest address = new ModelMapper().map(addressesDto, AddressRest.class);
+
+			return address;
+	}
+	//asdafd
+	
 }
