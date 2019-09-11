@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import ro.pss.asm.tutorials.spring.service.AddressService;
 import ro.pss.asm.tutorials.spring.service.UserService;
 import ro.pss.asm.tutorials.spring.ui.model.request.UserDetailsRequestModel;
+import ro.pss.asm.tutorials.spring.ui.model.response.AddressRest;
 import ro.pss.asm.tutorials.spring.ui.model.response.ErrorMessages;
 import ro.pss.asm.tutorials.spring.ui.model.response.OperationStatus;
 import ro.pss.asm.tutorials.spring.ui.model.response.UserRest;
+import ro.pss.asm.tutorials.spring.ui.model.shared.dto.AddressDto;
 import ro.pss.asm.tutorials.spring.ui.model.shared.dto.UserDto;
 
 @RestController
@@ -32,6 +33,9 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	AddressService addressService;
 	
 	@GetMapping(path="/{id}",
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
@@ -118,4 +122,20 @@ public class UserController {
 		
 		return opStatus;
 	}
+	
+	// GET USER'S LIST OF ADDRESSES
+	// http://localhost:8080/api/users/ajdk/addresses
+	//
+	@GetMapping(path="/{id}/addresses",
+			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public List<AddressRest> getAddresses(@PathVariable String id) {
+		
+		List<AddressDto> addressesDto = addressService.getAddresses(id);
+		
+		java.lang.reflect.Type listType = new TypeToken<List<AddressRest>>() {}.getType();
+		List<AddressRest> addresses  = new ModelMapper().map(addressesDto, listType);
+		
+		return addresses;
+	}
+	
 }
