@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -73,8 +73,7 @@ public class UserServiceImpl implements UserService{
 			throw new UsernameNotFoundException(email);
 		}
 		
-		UserDto userDto = new UserDto();
-		BeanUtils.copyProperties(userEntity, userDto);
+		UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 		return userDto;
 	}
 
@@ -98,8 +97,8 @@ public class UserServiceImpl implements UserService{
 		UserEntity userEntity = userRepository.findByPublicUserId(publicUserId);
 		if(userEntity == null)
 			throw new UsernameNotFoundException(publicUserId);
-		UserDto userDto = new UserDto();
-		BeanUtils.copyProperties(userEntity, userDto);
+
+		UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);		
 		return userDto;
 	}
 
@@ -110,13 +109,13 @@ public class UserServiceImpl implements UserService{
 		UserEntity userEntity = userRepository.findByPublicUserId(userId);
 		if(userEntity == null)
 			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
-		UserDto userDto = new UserDto();
 		
 		userEntity.setFirstName(user.getFirstName());
 		userEntity.setLastName(user.getLastName());
 		
 		UserEntity updateUserDetails = userRepository.save(userEntity);
-		BeanUtils.copyProperties(updateUserDetails, userDto);
+		UserDto userDto = new ModelMapper().map(updateUserDetails, UserDto.class);
+		
 		return userDto;
 	}
 
@@ -139,18 +138,12 @@ public class UserServiceImpl implements UserService{
 		if(page > 0)
 			page-=1;
 		
-		List<UserDto> userDtos = new ArrayList<>();
-		
 		Pageable pageable= PageRequest.of(page, limit);
-		
 		Page<UserEntity> usersPage = userRepository.findAll(pageable);
 		List<UserEntity> userEntities = usersPage.getContent();
-		
-		for(UserEntity userEntity: userEntities) {
-			UserDto userDto = new UserDto();
-			BeanUtils.copyProperties(userEntity, userDto);
-			userDtos.add(userDto);
-		}
+		// map userEntity list to UserDto list
+		java.lang.reflect.Type listType = new TypeToken<List<UserDto>>() {}.getType();
+		List<UserDto> userDtos  = new ModelMapper().map(userEntities, listType);
 		
 		return userDtos;
 	}
