@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ro.pss.asm.tutorials.spring.service.UserService;
 import ro.pss.asm.tutorials.spring.ui.model.request.UserDetailsRequestModel;
 import ro.pss.asm.tutorials.spring.ui.model.response.ErrorMessages;
@@ -35,10 +37,10 @@ public class UserController {
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public UserRest getUser(@PathVariable String id) {
 		
-		UserRest returnUser = new UserRest();
-		
 		UserDto userDto = userService.getUserByUserId(id);
-		BeanUtils.copyProperties(userDto, returnUser);
+		
+		ModelMapper modelMapper= new ModelMapper();
+		UserRest returnUser = modelMapper.map(userDto, UserRest.class);
 		
 		return returnUser;
 	}
@@ -54,9 +56,9 @@ public class UserController {
 		
 		List<UserDto> userDtos = userService.getUsers(page, limit);
 		
+		ModelMapper modelMapper= new ModelMapper();
 		for(UserDto userDto: userDtos) {
-			UserRest user = new UserRest();
-			BeanUtils.copyProperties(userDto, user);
+			UserRest user = modelMapper.map(userDto, UserRest.class);
 			users.add(user);
 		}
 		return users;
@@ -93,12 +95,12 @@ public class UserController {
 			)
 	public UserRest updateUser(@RequestBody UserDetailsRequestModel userDetails, @PathVariable String id) {
 		
-		UserRest userRest = new UserRest();
-		UserDto userDto = new UserDto();
-		BeanUtils.copyProperties(userDetails, userDto);
+		ModelMapper modelMapper = new ModelMapper();
+		UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 		
 		UserDto updatedUser = userService.updateUser(id, userDto);
-		BeanUtils.copyProperties(updatedUser, userRest);
+		
+		UserRest userRest = modelMapper.map(updatedUser, UserRest.class);
 		
 		return userRest;
 	}
