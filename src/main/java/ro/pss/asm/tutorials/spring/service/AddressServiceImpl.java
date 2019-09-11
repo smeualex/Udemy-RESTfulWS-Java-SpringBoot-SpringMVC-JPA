@@ -1,13 +1,14 @@
 package ro.pss.asm.tutorials.spring.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import ro.pss.asm.tutorials.spring.exceptions.AddressServiceException;
 import ro.pss.asm.tutorials.spring.io.entity.AddressEntity;
 import ro.pss.asm.tutorials.spring.io.entity.UserEntity;
 import ro.pss.asm.tutorials.spring.io.repositories.AddressRepository;
@@ -26,8 +27,6 @@ public class AddressServiceImpl implements AddressService {
 	@Override
 	public List<AddressDto> getAddresses(String userId) {
 		
-		List<AddressDto> addressesDto = new ArrayList<>();
-		
 		// one method is to get the user by the public id
 		// and with the entity fetched from the db, return the addresses
 		// get user by public user id
@@ -40,14 +39,21 @@ public class AddressServiceImpl implements AddressService {
 		Iterable<AddressEntity> addressesEntity = addressRepository.findAllByUserDetails(userEntity);
 		
 		// mapp each addressEntity to addressDto
-		ModelMapper modelMapper = new ModelMapper();
-		for(AddressEntity addressEntity: addressesEntity) {
-			addressesDto.add(
-						modelMapper.map(addressEntity, AddressDto.class)
-					);
-		}
+		java.lang.reflect.Type listType = new TypeToken<List<AddressEntity>>() {}.getType();
+		List<AddressDto> addressesDto  = new ModelMapper().map(addressesEntity, listType);
 		
 		return addressesDto;
+	}
+
+	@Override
+	public AddressDto getAddress(String addressId) {
+
+		AddressEntity addressEntity = addressRepository.findByAddressId(addressId);
+		if(addressEntity == null) {
+			throw new AddressServiceException("No address found");
+		}
+		AddressDto addressDto = new ModelMapper().map(addressEntity, AddressDto.class);
+		return addressDto;
 	}
 
 }
