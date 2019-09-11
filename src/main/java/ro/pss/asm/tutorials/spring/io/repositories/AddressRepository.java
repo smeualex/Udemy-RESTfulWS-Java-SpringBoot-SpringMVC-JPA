@@ -11,5 +11,7 @@ import ro.pss.asm.tutorials.spring.io.entity.UserEntity;
 @Repository
 public interface AddressRepository extends CrudRepository<AddressEntity, Long>{
 	List<AddressEntity> findAllByUserDetails(UserEntity userEntity);
+
+	AddressEntity findByAddressId(String addressId);
 }
 
