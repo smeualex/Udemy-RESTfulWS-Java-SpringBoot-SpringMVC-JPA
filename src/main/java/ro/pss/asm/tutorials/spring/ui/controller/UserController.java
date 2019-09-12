@@ -1,7 +1,6 @@
 package ro.pss.asm.tutorials.spring.ui.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -148,17 +147,5 @@ public class UserController {
 			AddressRest address = new ModelMapper().map(addressesDto, AddressRest.class);
 
 			return address;
-	}
-	
-	@GetMapping(path="/{id}/addresses/{addressId}",
-			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public AddressRest getAddress(
-			@PathVariable String id,
-			@PathVariable String addressId) {
-		
-		AddressDto addressDto = addressService.getAddress(addressId);
-		AddressRest address = new ModelMapper().map(addressDto, AddressRest.class);
-		return address;
-	}
-	
+	}	
 }
