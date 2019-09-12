@@ -13,8 +13,8 @@ import javax.persistence.ManyToOne;
 
 @Entity(name = "addresses")
 public class AddressEntity implements Serializable {
-	
-	private static final long serialVersionUID = -4361278622515522493L;
+
+	private static final long serialVersionUID = 6547065631983781706L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,6 +42,11 @@ public class AddressEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="users_id")
 	UserEntity userDetails;
+
+	
+	
+	public AddressEntity() {
+	}
 
 	public long getId() {
 		return id;

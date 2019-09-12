@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class UserEntity implements Serializable {
 
-	private static final long serialVersionUID = -8831327771366459639L;
+	private static final long serialVersionUID = -3122780025763696322L;
 
 	@Id
 	@GeneratedValue
@@ -39,7 +40,7 @@ public class UserEntity implements Serializable {
 	private String emailVerificationToken;
 
 	// @Column(nullable=false, columnDefinition = "boolean default false")
-	// columnDefinition = "boolean default false" not portable accross different dbs
+	// columnDefinition = "boolean default false" not portable across different dbs
 	@Column(nullable = false)
 	private Boolean emailVerificationStatus = false;
 	
@@ -48,9 +49,13 @@ public class UserEntity implements Serializable {
 	//      cascade  -> ALL ( propagate delete \ update addresses to deletion of the user)
 	@OneToMany(
 			mappedBy = "userDetails", 
-			cascade = CascadeType.ALL)
+			cascade = CascadeType.ALL,
+			fetch = FetchType.EAGER)
 	List<AddressEntity> addresses;
 
+	public UserEntity() {
+	}
+	
 	public long getId() {
 		return id;
 	}
