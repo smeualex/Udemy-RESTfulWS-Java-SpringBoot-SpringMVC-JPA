@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
+import ro.pss.asm.tutorials.spring.exceptions.AddressServiceException;
 import ro.pss.asm.tutorials.spring.io.entity.AddressEntity;
 import ro.pss.asm.tutorials.spring.io.entity.UserEntity;
 import ro.pss.asm.tutorials.spring.io.repositories.AddressRepository;
@@ -17,7 +17,6 @@ import ro.pss.asm.tutorials.spring.io.repositories.UserRepository;
 import ro.pss.asm.tutorials.spring.ui.model.response.AddressRest;
 import ro.pss.asm.tutorials.spring.ui.model.shared.dto.AddressDto;
 
-@Slf4j
 @Service
 public class AddressServiceImpl implements AddressService {
 
@@ -37,7 +36,6 @@ public class AddressServiceImpl implements AddressService {
 		if(userEntity == null) {
 			throw new UsernameNotFoundException("User " + userId + " not found!");
 		}
-		log.error("> addressServiceafter findByPublicUserId ");
 		
 		// use the AddressRepository and use JPA to query the DB
 		Iterable<AddressEntity> addressesEntity = addressRepository.findAllByUserDetails(userEntity);
@@ -51,14 +49,13 @@ public class AddressServiceImpl implements AddressService {
 	@Override
 	public AddressDto getAddress(String addressId) {
 
-		AddressDto addressDto = null;
-		
 		AddressEntity addressEntity = addressRepository.findByAddressId(addressId);
-		if(addressEntity != null) {
-			addressDto = new ModelMapper().map(addressEntity, AddressDto.class);
+		if(addressEntity == null) {
+			throw new AddressServiceException("No address found");
 		}
-		
+		AddressDto addressDto = new ModelMapper().map(addressEntity, AddressDto.class);
 		return addressDto;
 	}
 
 }
+

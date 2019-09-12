@@ -2,7 +2,6 @@ package ro.pss.asm.tutorials.spring.security;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -13,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.servlet.HandlerMapping;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -63,14 +61,13 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 					.getBody();
 			
 			String user = claims.getSubject();
-			
-			String requestURI =  request.getRequestURI();
-			String userIdFromRequest = requestURI.substring(requestURI.lastIndexOf('/') + 1);
-			String userIdFromToken = (String)claims.get("userId");
-
 			return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
 			
-			// TODO: fix this! Use token of 1 user with user id of another !!!
+// TODO: fix this! Use token of 1 user with user id of another !!!
+//			String requestURI =  request.getRequestURI();
+//			String userIdFromRequest = requestURI.substring(requestURI.lastIndexOf('/') + 1);
+//			String userIdFromToken = (String)claims.get("userId");
+//			
 //			// compare userid received in the request with the one contained in the token
 //			if(user != null && userIdFromToken.equals(userIdFromRequest)) {
 //				// return new instance of AuthenticationToken

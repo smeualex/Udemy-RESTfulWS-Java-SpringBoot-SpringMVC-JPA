@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.slf4j.Slf4j;
 import ro.pss.asm.tutorials.spring.service.AddressService;
 import ro.pss.asm.tutorials.spring.service.UserService;
 import ro.pss.asm.tutorials.spring.ui.model.request.UserDetailsRequestModel;
@@ -29,7 +28,6 @@ import ro.pss.asm.tutorials.spring.ui.model.response.UserRest;
 import ro.pss.asm.tutorials.spring.ui.model.shared.dto.AddressDto;
 import ro.pss.asm.tutorials.spring.ui.model.shared.dto.UserDto;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/users")	// http://localhost:8080/api/users
 public class UserController {
@@ -133,12 +131,9 @@ public class UserController {
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public List<AddressRest> getAddresses(@PathVariable String id) {
 		
-		log.error("> ");
 		List<AddressDto> addressesDto = addressService.getAddresses(id);
-		log.error("> ");
 		java.lang.reflect.Type listType = new TypeToken<List<AddressRest>>() {}.getType();
 		List<AddressRest> addresses  = new ModelMapper().map(addressesDto, listType);
-		log.error("> ");
 		return addresses;
 	}
 
@@ -153,6 +148,17 @@ public class UserController {
 			AddressRest address = new ModelMapper().map(addressesDto, AddressRest.class);
 
 			return address;
+	}
+	
+	@GetMapping(path="/{id}/addresses/{addressId}",
+			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public AddressRest getAddress(
+			@PathVariable String id,
+			@PathVariable String addressId) {
+		
+		AddressDto addressDto = addressService.getAddress(addressId);
+		AddressRest address = new ModelMapper().map(addressDto, AddressRest.class);
+		return address;
 	}
 	
 }
