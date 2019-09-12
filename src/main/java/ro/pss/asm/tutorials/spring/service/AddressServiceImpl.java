@@ -1,6 +1,5 @@
 package ro.pss.asm.tutorials.spring.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -14,7 +13,6 @@ import ro.pss.asm.tutorials.spring.io.entity.AddressEntity;
 import ro.pss.asm.tutorials.spring.io.entity.UserEntity;
 import ro.pss.asm.tutorials.spring.io.repositories.AddressRepository;
 import ro.pss.asm.tutorials.spring.io.repositories.UserRepository;
-import ro.pss.asm.tutorials.spring.ui.model.response.AddressRest;
 import ro.pss.asm.tutorials.spring.ui.model.shared.dto.AddressDto;
 
 @Service
