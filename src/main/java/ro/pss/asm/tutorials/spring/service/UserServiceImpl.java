@@ -8,6 +8,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
@@ -134,7 +135,7 @@ public class UserServiceImpl implements UserService{
 
 
 	@Override
-	public List<UserDto> getUsers(int page, int limit) {
+	public Page<UserDto> getUsers(int page, int limit) {
 		
 		// use page index from 1;
 		if(page > 0)
@@ -147,7 +148,9 @@ public class UserServiceImpl implements UserService{
 		java.lang.reflect.Type listType = new TypeToken<List<UserDto>>() {}.getType();
 		List<UserDto> userDtos  = new ModelMapper().map(userEntities, listType);
 		
-		return userDtos;
+		int totalElements = (int) usersPage.getTotalElements();
+		
+		return new PageImpl<UserDto>(userDtos, pageable, totalElements);
 	}
 
 	

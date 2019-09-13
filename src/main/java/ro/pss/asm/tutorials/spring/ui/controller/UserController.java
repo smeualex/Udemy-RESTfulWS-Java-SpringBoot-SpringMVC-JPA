@@ -6,6 +6,8 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,20 +54,17 @@ public class UserController {
 	@GetMapping(
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }
 			)
-	public List<UserRest> getUsers(
+	public Page<UserRest> getUsers(
 			@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "limit", defaultValue = "25") int limit){
 		
-		List<UserRest> users = new ArrayList<>();
+		Page<UserDto> userPage = userService.getUsers(page, limit);
+		List<UserDto> userDtos = userPage.getContent();
 		
-		List<UserDto> userDtos = userService.getUsers(page, limit);
-		
-		ModelMapper modelMapper= new ModelMapper();
-		for(UserDto userDto: userDtos) {
-			UserRest user = modelMapper.map(userDto, UserRest.class);
-			users.add(user);
-		}
-		return users;
+		java.lang.reflect.Type listType = new TypeToken<List<UserRest>>() {}.getType();
+		List<UserRest> userRest  = new ModelMapper().map(userDtos, listType);
+
+		return new PageImpl<UserRest>(userRest, userPage.getPageable(), userPage.getTotalElements());
 	}
 	
 	@PostMapping (
