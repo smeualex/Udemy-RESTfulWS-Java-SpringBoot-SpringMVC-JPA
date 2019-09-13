@@ -49,8 +49,7 @@ public class UserEntity implements Serializable {
 	//      cascade  -> ALL ( propagate delete \ update addresses to deletion of the user)
 	@OneToMany(
 			mappedBy = "userDetails", 
-			cascade = CascadeType.ALL,
-			fetch = FetchType.EAGER)
+			cascade = CascadeType.ALL)
 	List<AddressEntity> addresses;
 
 	public UserEntity() {
