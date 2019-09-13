@@ -43,10 +43,6 @@ public class AddressEntity implements Serializable {
 	@JoinColumn(name="users_id")
 	UserEntity userDetails;
 
-	
-	
-	public AddressEntity() {
-	}
 
 	public long getId() {
 		return id;

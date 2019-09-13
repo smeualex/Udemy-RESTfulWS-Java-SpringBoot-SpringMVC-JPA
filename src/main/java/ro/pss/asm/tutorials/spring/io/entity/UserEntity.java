@@ -50,9 +50,6 @@ public class UserEntity implements Serializable {
 			mappedBy = "userDetails", 
 			cascade = CascadeType.ALL)
 	List<AddressEntity> addresses;
-
-	public UserEntity() {
-	}
 	
 	public long getId() {
 		return id;
