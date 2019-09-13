@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -73,7 +74,8 @@ public class UserServiceImpl implements UserService{
 			throw new UsernameNotFoundException(email);
 		}
 		
-		UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+		UserDto userDto = new UserDto();
+		BeanUtils.copyProperties(userEntity, userDto);
 		return userDto;
 	}
 
