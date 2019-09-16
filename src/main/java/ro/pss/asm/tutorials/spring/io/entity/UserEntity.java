@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "users")
 public class UserEntity implements Serializable {
@@ -50,79 +53,4 @@ public class UserEntity implements Serializable {
 			mappedBy = "userDetails", 
 			cascade = CascadeType.ALL)
 	List<AddressEntity> addresses;
-
-	public UserEntity() {
-	}
-	
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getPublicUserId() {
-		return publicUserId;
-	}
-
-	public void setPublicUserId(String publicUserId) {
-		this.publicUserId = publicUserId;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getEncryptedPassword() {
-		return encryptedPassword;
-	}
-
-	public void setEncryptedPassword(String encryptedPassword) {
-		this.encryptedPassword = encryptedPassword;
-	}
-
-	public String getEmailVerificationToken() {
-		return emailVerificationToken;
-	}
-
-	public void setEmailVerificationToken(String emailVerificationToken) {
-		this.emailVerificationToken = emailVerificationToken;
-	}
-
-	public Boolean getEmailVerificationStatus() {
-		return emailVerificationStatus;
-	}
-
-	public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
-		this.emailVerificationStatus = emailVerificationStatus;
-	}
-
-	public List<AddressEntity> getAddresses() {
-		return addresses;
-	}
-
-	public void setAddresses(List<AddressEntity> addresses) {
-		this.addresses = addresses;
-	}
 }
