@@ -1,9 +1,11 @@
 package ro.pss.asm.tutorials.spring.ui.model.response;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import lombok.Data;
 
 @Data
-public class AddressRest {
+public class AddressRest extends ResourceSupport  {
 	
 	String addressId;
 	String city;
