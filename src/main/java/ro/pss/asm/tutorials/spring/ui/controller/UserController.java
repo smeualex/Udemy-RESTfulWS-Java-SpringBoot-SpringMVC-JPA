@@ -29,6 +29,7 @@ import ro.pss.asm.tutorials.spring.ui.model.shared.dto.AddressDto;
 import ro.pss.asm.tutorials.spring.ui.model.shared.dto.UserDto;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/users")	// http://localhost:8080/api/users
@@ -148,19 +149,16 @@ public class UserController {
 
 			AddressDto addressesDto = addressService.getAddress(addressId);
 	
-			Link selfLink = linkTo(UserController.class)
-					.slash(userId)
-					.slash("addresses")
-					.slash(addressId)
+			Link selfLink = linkTo(methodOn(UserController.class)
+					.getUserAddress(userId, addressId))
 					.withSelfRel();
 			
-			Link userLink = linkTo(UserController.class)
-					.slash(userId)
+			Link userLink = linkTo(methodOn(UserController.class)
+					.getUser(userId))
 					.withRel("user");
 			
-			Link addressesLink = linkTo(UserController.class)
-					.slash(userId)
-					.slash("addresses")
+			Link addressesLink = linkTo(methodOn(UserController.class)
+					.getAddresses(userId))
 					.withRel("addresses");
 			
 			AddressRest address = new ModelMapper().map(addressesDto, AddressRest.class);
