@@ -1,5 +1,8 @@
 package ro.pss.asm.tutorials.spring.ui.controller;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +33,6 @@ import ro.pss.asm.tutorials.spring.ui.model.response.OperationStatus;
 import ro.pss.asm.tutorials.spring.ui.model.response.UserRest;
 import ro.pss.asm.tutorials.spring.ui.model.shared.dto.AddressDto;
 import ro.pss.asm.tutorials.spring.ui.model.shared.dto.UserDto;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/users")	// http://localhost:8080/api/users
@@ -132,8 +134,11 @@ public class UserController {
 	// http://localhost:8080/api/users/ajdk/addresses
 	//
 	@GetMapping(path="/{id}/addresses",
-			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public List<AddressRest> getAddresses(@PathVariable String id) {
+			produces = { MediaType.APPLICATION_XML_VALUE, 
+					MediaType.APPLICATION_JSON_VALUE, 
+					"application/hal+json" 
+					})
+	public Resources<AddressRest> getAddresses(@PathVariable String id) {
 		
 		List<AddressRest> addresses = new ArrayList<>();
 		List<AddressDto> addressesDto = addressService.getAddresses(id);
@@ -154,16 +159,19 @@ public class UserController {
 				return address;
 			}).collect(Collectors.toList());
 		}
-
-		return addresses; 
+		
+		Link addressesSelfLink = linkTo(methodOn(UserController.class).getAddresses(id))
+				.withSelfRel();
+		return new Resources<AddressRest>(addresses, addressesSelfLink); 
 	}
 
 	// GET USER'S ADDRESS
 	// http://localhost:8080/api/users/<userId>/addresses/<addressId>
 	//
 	@GetMapping(path = "/{userId}/addresses/{addressId}", 
-				produces = { MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE })
-	public AddressRest getUserAddress(@PathVariable String userId, @PathVariable String addressId) {
+				produces = { MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE,
+						"application/hal+json", "application/hal.xml"})
+	public Resource<AddressRest> getUserAddress(@PathVariable String userId, @PathVariable String addressId) {
 
 			AddressDto addressesDto = addressService.getAddress(addressId);
 	
@@ -185,6 +193,6 @@ public class UserController {
 			address.add(userLink);
 			address.add(addressesLink);
 			
-			return address;
+			return new Resource<>(address);
 	}	
 }
