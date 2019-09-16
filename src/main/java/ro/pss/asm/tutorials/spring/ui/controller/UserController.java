@@ -2,6 +2,7 @@ package ro.pss.asm.tutorials.spring.ui.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -134,9 +135,26 @@ public class UserController {
 			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public List<AddressRest> getAddresses(@PathVariable String id) {
 		
+		List<AddressRest> addresses = new ArrayList<>();
 		List<AddressDto> addressesDto = addressService.getAddresses(id);
-		java.lang.reflect.Type listType = new TypeToken<List<AddressRest>>() {}.getType();
-		List<AddressRest> addresses  = new ModelMapper().map(addressesDto, listType);
+		
+		if (addressesDto != null && !addressesDto.isEmpty()) {
+
+			java.lang.reflect.Type listType = new TypeToken<List<AddressRest>>() {}.getType();
+			addresses = new ModelMapper().map(addressesDto, listType);
+
+			addresses.stream().map(address -> {
+				Link selfLink = linkTo(methodOn(UserController.class).getUserAddress(id, address.getAddressId()))
+						.withSelfRel();
+				Link userLink = linkTo(methodOn(UserController.class).getUser(id)).withRel("user");
+				
+				address.add(selfLink);
+				address.add(userLink);
+				
+				return address;
+			}).collect(Collectors.toList());
+		}
+
 		return addresses; 
 	}
 
