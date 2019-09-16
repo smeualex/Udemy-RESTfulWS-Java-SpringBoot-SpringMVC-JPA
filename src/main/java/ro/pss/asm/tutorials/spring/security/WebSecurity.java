@@ -26,7 +26,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests()
-			.antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()	// permit all POST to /api/users -> login
+			.antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()			// permit all POST to /api/users -> login
+			.antMatchers(HttpMethod.GET, SecurityConstants.EMAIL_VERIFICATION_URL).permitAll()	// permit all POST to verification url
 			.anyRequest().authenticated()												// all other requests have to be authenticated
 			.and().addFilter(getAuthenticationFilter()) 								// add the authentication filter to the security flow
 			.addFilter(new AuthorizationFilter(authenticationManager())) 				// add the authorization filter to the filter chain

@@ -148,4 +148,16 @@ public class UserController {
 
 			return address;
 	}	
+	
+	// EMAIL VERIFICATION
+	// http://localhost:8080/mobile-app-ws/api/users/email-verification?token=<tokenValue>
+	@GetMapping(path="/email-verification",
+			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public OperationStatus verifyEmailToken(@RequestParam(value = "token") String token) {
+		
+		OperationStatus status = new OperationStatus();
+		status.setName(RequestOperation.VERIFY_EMAIL.name());
+		
+		return status;
+	}
 }
